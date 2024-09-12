@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const config = require("./config");
-let conn;
 
 const connectDb = async () => {
   try {
     mongoose.set("strictQuery", false);
-    conn = await mongoose.connect(config.uri);
+    await mongoose.connect(config.uri);
     console.log(`Database Connected on ${config.uri}`);
   } catch (error) {
     console.log(error);
@@ -13,9 +12,11 @@ const connectDb = async () => {
 };
 
 const closeDb = async () => {
-  if (conn) {
-    await conn.close();
+  try {
+    await mongoose.connection.close();
     console.log("MongoDB connection closed");
+  } catch (error) {
+    console.error("Error closing mongoDB connection", error);
   }
 };
 
