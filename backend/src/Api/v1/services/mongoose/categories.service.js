@@ -1,7 +1,5 @@
-const { connectDb } = require("../../../../db.js/db");
 const { BadRequesError, NotFoundError } = require("../../../../errors");
 const Categories = require("../../models/categories.model");
-const { ObjectId } = require("mongodb");
 
 const getAll = async () => {
   try {

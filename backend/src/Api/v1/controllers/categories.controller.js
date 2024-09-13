@@ -1,5 +1,4 @@
 const categoriesService = require("../services/mongoose/categories.service");
-const mongoose = require("mongoose");
 const { customResponse } = require("../../../helpers/responseHelpers");
 
 const getAllCategories = async (req, res) => {
