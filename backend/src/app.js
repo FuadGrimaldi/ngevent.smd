@@ -1,11 +1,9 @@
-const configureMiddleware = require("./Api/v1/middlewares/middleware");
+const configureMiddleware = require("./middlewares/middleware");
 const { app, startServer } = require("../config/server");
-const {
-  notFoundHandler,
-  errorHandler,
-} = require("./Api/v1/helpers/errorHandler");
-const corsConfig = require("./Api/v1/middlewares/cors");
-const router = require("./Api/v1/routes/api");
+const NotFoundMiddleware = require("./middlewares/not-found");
+const handlerErrorMiddleware = require("./middlewares/handler-error");
+const corsConfig = require("./middlewares/cors");
+const router = require("./routes/api");
 
 // CORS Configuration
 app.options("*", corsConfig);
@@ -16,10 +14,15 @@ configureMiddleware(app);
 // router
 app.use("/api/v1", router);
 
-// Catch 404 and forward to error handler
-app.use(notFoundHandler);
+// test welcome
+app.use("/", (req, res) => {
+  res.status(200).json({
+    message: "Api ngevent.smd",
+  });
+});
 
-// Error handler
-app.use(errorHandler);
+// middleware error
+app.use(NotFoundMiddleware);
+app.use(handlerErrorMiddleware);
 
 startServer();
