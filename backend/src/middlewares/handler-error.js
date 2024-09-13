@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const { customResponse } = require("../helpers/responseHelpers");
 
 const errorHandlerMiddleware = (err, req, res, next) => {
   let customError = {
@@ -28,7 +29,10 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.statusCode = StatusCodes.NOT_FOUND;
   }
 
-  return res.status(customError.statusCode).json({ msg: customError.msg });
+  // Use customResponse helper to format the error response
+  return res
+    .status(customError.statusCode)
+    .json(customResponse(customError.statusCode, customError.msg, null));
 };
 
 module.exports = errorHandlerMiddleware;
