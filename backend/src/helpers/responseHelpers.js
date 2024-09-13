@@ -1,4 +1,3 @@
-// helpers/ResponseHelper.js
 const customResponse = (statusCode, message, data) => {
   let statusText;
 
@@ -43,7 +42,7 @@ const customResponse = (statusCode, message, data) => {
       status: statusText,
       message: message,
     },
-    data: data,
+    data: data || null, // Ensure 'data' is always sent, even if null
   };
 };
 
