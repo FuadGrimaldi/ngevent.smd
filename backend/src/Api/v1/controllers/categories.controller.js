@@ -84,7 +84,7 @@ const deletedCategories = async (req, res) => {
         .status(400)
         .json(customResponse(400, "Invalid ID format", null));
     }
-    const data = await categoriesService.deleted(id);
+    const data = await categoriesService.destroy(id);
     if (!data) {
       return res
         .status(404)

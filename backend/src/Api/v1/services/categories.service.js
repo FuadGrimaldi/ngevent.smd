@@ -41,7 +41,7 @@ const update = async (request, id) => {
         name: request.name,
         //   organizerId: request.organizerId,
       },
-      { new: true }
+      { runValidators: true, new: true }
     );
   } catch (error) {
     console.error("Error updated category: ", error);
@@ -49,7 +49,7 @@ const update = async (request, id) => {
   }
 };
 
-const deleted = async (id) => {
+const destroy = async (id) => {
   try {
     return await Categories.deleteOne({ _id: id });
   } catch (error) {
@@ -63,5 +63,5 @@ module.exports = {
   getById,
   create,
   update,
-  deleted,
+  destroy,
 };
