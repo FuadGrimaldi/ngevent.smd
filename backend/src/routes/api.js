@@ -4,6 +4,7 @@ const upload = require("../middlewares/multer");
 
 const categoriesController = require("../Api/v1/controllers/categories.controller");
 const imageController = require("../Api/v1/controllers/image.controller");
+const talentController = require("../Api/v1/controllers/talent.controller");
 
 // categories
 router.get("/cms/categories", categoriesController.getAllCategories);
@@ -18,5 +19,12 @@ router.post(
   upload.single("avatar"),
   imageController.createImage
 );
+
+// Talent
+router.post("/cms/talents", talentController.createTalent);
+router.get("/cms/talents", talentController.getAllTalent);
+router.get("/cms/talents/:id", talentController.getOneTalent);
+router.put("/cms/talents/:id", talentController.updateTalent);
+router.delete("/cms/talents/:id", talentController.deletedTalent);
 
 module.exports = router;
