@@ -1,6 +1,12 @@
 const { BadRequesError, NotFoundError } = require("../../../../errors");
 const Categories = require("../../models/categories.model");
 
+const checkCategories = async (id) => {
+  const result = await Categories.findOne({ _id: id });
+  if (!result) throw new NotFoundError("image not found");
+  return result;
+};
+
 const getAll = async () => {
   try {
     return await Categories.find();
@@ -74,4 +80,5 @@ module.exports = {
   create,
   update,
   destroy,
+  checkCategories,
 };

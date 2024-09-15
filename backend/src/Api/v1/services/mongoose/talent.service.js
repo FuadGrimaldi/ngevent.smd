@@ -1,7 +1,12 @@
 const { BadRequesError, NotFoundError } = require("../../../../errors");
-const mongoose = require("mongoose");
 const Talents = require("../../models/talent.model");
 const { checkImage } = require("./image.service");
+
+const checkTalent = async (id) => {
+  const result = await Talents.findOne({ _id: id });
+  if (!result) throw new NotFoundError("talent not found");
+  return result;
+};
 
 const getAll = async (req) => {
   try {
@@ -97,8 +102,6 @@ const update = async (req) => {
 
 const destroy = async (req) => {
   try {
-    // check id
-    await getById(req);
     // data
     const id = req.params.id;
     const result = await Talents.deleteOne({ _id: id });
@@ -116,4 +119,5 @@ module.exports = {
   getById,
   update,
   destroy,
+  checkTalent,
 };
