@@ -33,7 +33,10 @@ const getAll = async () => {
 const getById = async (req) => {
   try {
     const id = req.params.id;
-    const result = await Categories.findOne({ _id: id });
+    const result = await Categories.findOne({
+      _id: id,
+      organizer: req.user.organizer,
+    });
     if (!result) throw new NotFoundError("Categories not found");
     return result;
   } catch (error) {
@@ -79,7 +82,10 @@ const update = async (req) => {
 const destroy = async (req) => {
   try {
     const id = req.params.id;
-    const result = await Categories.deleteOne({ _id: id });
+    const result = await Categories.deleteOne({
+      _id: id,
+      organizer: req.user.organizer,
+    });
     if (!result) throw new NotFoundError("Categories not found");
     return result;
   } catch (error) {

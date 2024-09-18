@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/multer");
-const { authenticateUser } = require("../middlewares/auth");
+const { authenticateUser, authorizeRoles } = require("../middlewares/auth");
 
 const categoriesController = require("../Api/v1/controllers/categories.controller");
 const imageController = require("../Api/v1/controllers/image.controller");
@@ -17,31 +17,37 @@ router.post("/auth/signin", authController.signInCMS);
 router.get(
   "/cms/categories/admin",
   authenticateUser,
+  authorizeRoles("admin"),
   categoriesController.getAllCategories
 );
 router.get(
   "/cms/categories",
   authenticateUser,
+  authorizeRoles("organizer"),
   categoriesController.getAllCategoriesByOrganizer
 );
 router.post(
   "/cms/categories",
   authenticateUser,
+  authorizeRoles("organizer"),
   categoriesController.createCategories
 );
 router.get(
   "/cms/categories/:id",
   authenticateUser,
+  authorizeRoles("organizer"),
   categoriesController.getCategoriesById
 );
 router.put(
   "/cms/categories/:id",
   authenticateUser,
+  authorizeRoles("organizer"),
   categoriesController.updateCategories
 );
 router.delete(
   "/cms/categories/:id",
   authenticateUser,
+  authorizeRoles("organizer"),
   categoriesController.deletedCategories
 );
 
@@ -68,5 +74,6 @@ router.delete("/cms/events/:id", eventController.deleteEvent);
 
 // User
 router.post("/organizers", userController.createOrganizer);
+router.post("/users", authenticateUser, userController.createUser);
 
 module.exports = router;
