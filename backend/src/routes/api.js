@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/multer");
+const { authenticateUser } = require("../middlewares/auth");
 
 const categoriesController = require("../Api/v1/controllers/categories.controller");
 const imageController = require("../Api/v1/controllers/image.controller");
@@ -13,11 +14,36 @@ const authController = require("../Api/v1/controllers/auth.controller");
 router.post("/auth/signin", authController.signInCMS);
 
 // categories
-router.get("/cms/categories", categoriesController.getAllCategories);
-router.post("/cms/categories", categoriesController.createCategories);
-router.get("/cms/categories/:id", categoriesController.getCategoriesById);
-router.put("/cms/categories/:id", categoriesController.updateCategories);
-router.delete("/cms/categories/:id", categoriesController.deletedCategories);
+router.get(
+  "/cms/categories/admin",
+  authenticateUser,
+  categoriesController.getAllCategories
+);
+router.get(
+  "/cms/categories",
+  authenticateUser,
+  categoriesController.getAllCategoriesByOrganizer
+);
+router.post(
+  "/cms/categories",
+  authenticateUser,
+  categoriesController.createCategories
+);
+router.get(
+  "/cms/categories/:id",
+  authenticateUser,
+  categoriesController.getCategoriesById
+);
+router.put(
+  "/cms/categories/:id",
+  authenticateUser,
+  categoriesController.updateCategories
+);
+router.delete(
+  "/cms/categories/:id",
+  authenticateUser,
+  categoriesController.deletedCategories
+);
 
 // images
 router.post(

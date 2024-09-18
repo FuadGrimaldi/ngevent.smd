@@ -8,6 +8,6 @@ const createJWT = ({ payload }) => {
   return token;
 };
 
-const isTokeValid = ({ token }) => jwt.verify(token, config.secret_key);
+const isTokenValid = ({ token }) => jwt.verify(token, config.secret_key);
 
-module.exports = { createJWT, isTokeValid };
+module.exports = { createJWT, isTokenValid };

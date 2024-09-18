@@ -7,9 +7,23 @@ const checkCategories = async (id) => {
   return result;
 };
 
+const getAllByOrganizer = async (req) => {
+  try {
+    return await Categories.find({ organizer: req.user.organizer })
+      .populate({
+        path: "organizer",
+        select: "organizer",
+      })
+      .select("_id name organizer");
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
 const getAll = async () => {
   try {
-    return await Categories.find();
+    return await Categories.find().select("_id name organizer");
   } catch (error) {
     console.error("Error fetching categories:", error);
     throw error;
@@ -35,7 +49,7 @@ const create = async (req) => {
 
     if (check) throw new BadRequesError("Categories name is exist");
 
-    return await Categories.create({ name });
+    return await Categories.create({ name, organizer: req.user.organizer });
   } catch (error) {
     console.error("Error creating category:", error);
     throw error;
@@ -76,6 +90,7 @@ const destroy = async (req) => {
 
 module.exports = {
   getAll,
+  getAllByOrganizer,
   getById,
   create,
   update,

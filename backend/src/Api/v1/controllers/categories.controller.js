@@ -6,7 +6,22 @@ const getAllCategories = async (req, res) => {
     const data = await categoriesService.getAll();
     res
       .status(200)
-      .json(customResponse(200, "Users retrieved successfully", data));
+      .json(customResponse(200, "Categories retrieved successfully", data));
+  } catch (error) {
+    console.log(error);
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
+
+const getAllCategoriesByOrganizer = async (req, res) => {
+  try {
+    const data = await categoriesService.getAllByOrganizer(req);
+    res
+      .status(200)
+      .json(customResponse(200, "Categories retrieved successfully", data));
   } catch (error) {
     console.log(error);
     // Return proper error response with error handler
@@ -21,7 +36,7 @@ const getCategoriesById = async (req, res) => {
     const data = await categoriesService.getById(req);
     res
       .status(200)
-      .json(customResponse(200, "Users retrieved successfully", data));
+      .json(customResponse(200, "Categories retrieved successfully", data));
   } catch (error) {
     console.error(error);
     // Return proper error response with error handler
@@ -88,6 +103,7 @@ const deletedCategories = async (req, res) => {
 
 module.exports = {
   getAllCategories,
+  getAllCategoriesByOrganizer,
   createCategories,
   getCategoriesById,
   updateCategories,
