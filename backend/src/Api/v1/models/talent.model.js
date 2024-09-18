@@ -16,6 +16,11 @@ const talentSchema = new Schema(
       ref: "image",
       required: true,
     },
+    organizer: {
+      type: mongoose.Types.ObjectId,
+      ref: "Organizer",
+      required: true,
+    },
   },
   { timestamps: true }
 );

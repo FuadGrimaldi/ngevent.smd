@@ -48,7 +48,10 @@ const getById = async (req) => {
 const create = async (req) => {
   try {
     const { name } = req.body;
-    const check = await Categories.findOne({ name });
+    const check = await Categories.findOne({
+      name,
+      organize: req.user.organizer,
+    });
 
     if (check) throw new BadRequesError("Categories name is exist");
 
@@ -61,18 +64,18 @@ const create = async (req) => {
 
 const update = async (req) => {
   try {
-    // Tunggu hasil dari getById
-    await getById(req);
-
     const id = req.params.id;
     const { name } = req.body; // Perbaikan destrukturisasi
-    return await Categories.findByIdAndUpdate(
+    const result = await Categories.findByIdAndUpdate(
       id,
       {
         name: name,
+        organize: req.user.organizer,
       },
       { runValidators: true, new: true }
     );
+    if (!result) throw new NotFoundError("Categories not found");
+    return result;
   } catch (error) {
     console.error("Error updated category: ", error);
     throw error;

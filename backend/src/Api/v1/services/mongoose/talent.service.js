@@ -11,7 +11,7 @@ const checkTalent = async (id) => {
 const getAll = async (req) => {
   try {
     const { keyword } = req.query;
-    let condition = {};
+    let condition = { organizer: req.user.organizer };
 
     if (keyword) {
       condition = { ...condition, name: { $regex: keyword, $options: "i" } };
@@ -34,7 +34,10 @@ const getAll = async (req) => {
 const getById = async (req) => {
   try {
     const id = req.params.id;
-    const result = await Talents.findOne({ _id: id })
+    const result = await Talents.findOne({
+      _id: id,
+      organizer: req.user.organizer,
+    })
       .populate({
         path: "image_id",
         select: "_id name",
@@ -54,11 +57,19 @@ const create = async (req) => {
     // check image
     await checkImage(image_id);
     // check talent
-    const check = await Talents.findOne({ name });
+    const check = await Talents.findOne({
+      name,
+      organizer: req.user.organizer,
+    });
 
-    if (check) throw new BadRequesError("Talent name is exist");
+    if (check) throw new BadRequesError("Talent in organizer is exist");
 
-    return await Talents.create({ name, role, image_id });
+    return await Talents.create({
+      name,
+      role,
+      image_id,
+      organizer: req.user.organizer,
+    });
   } catch (error) {
     console.error("Error creating talent:", error);
     throw error;
@@ -67,9 +78,6 @@ const create = async (req) => {
 
 const update = async (req) => {
   try {
-    // check id
-    await getById(req);
-
     const id = req.params.id;
     const { name, role, image_id } = req.body;
 
@@ -79,6 +87,7 @@ const update = async (req) => {
     // check talent name
     const check = await Talents.findOne({
       name,
+      organizer: req.user.organizer,
       _id: { $ne: id },
     });
     if (check) throw new BadRequesError("Talent name is exist");
@@ -90,9 +99,11 @@ const update = async (req) => {
         name: name,
         role: role,
         image_id: image_id,
+        organizer: req.user.organizer,
       },
       { runValidators: true, new: true }
     );
+    if (!result) throw new NotFoundError("Talent not found");
     return result;
   } catch (error) {
     console.error("Error updated talent by id:", error);
@@ -104,7 +115,10 @@ const destroy = async (req) => {
   try {
     // data
     const id = req.params.id;
-    const result = await Talents.deleteOne({ _id: id });
+    const result = await Talents.deleteOne({
+      _id: id,
+      organizer: req.user.organizer,
+    });
     if (!result) throw new NotFoundError("Talent not found");
     return result;
   } catch (error) {

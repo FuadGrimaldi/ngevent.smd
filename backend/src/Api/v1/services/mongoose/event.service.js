@@ -2,7 +2,7 @@ const { BadRequesError, NotFoundError } = require("../../../../errors");
 const Event = require("../../models/event.model");
 const { checkImage } = require("./image.service");
 const { checkCategories } = require("./categories.service");
-const { checkTalent, getById } = require("./talent.service");
+const { checkTalent } = require("./talent.service");
 
 const create = async (req) => {
   try {
@@ -26,7 +26,10 @@ const create = async (req) => {
     await checkTalent(talent);
 
     // filter by title
-    const checkByTitle = await Event.findOne({ title });
+    const checkByTitle = await Event.findOne({
+      title,
+      organize: req.user.organizer,
+    });
     if (checkByTitle) throw new BadRequesError("title already exists");
     // store
     const result = await Event.create({
@@ -41,6 +44,7 @@ const create = async (req) => {
       image,
       categories,
       talent,
+      organizer: req.user.organizer,
     });
     // return
     return result;
@@ -50,6 +54,44 @@ const create = async (req) => {
   }
 };
 
+const getAllbyOrganizer = async (req) => {
+  try {
+    const { keyword, categories, talent } = req.query;
+    let condition = { organizer: req.user.organizer };
+
+    if (keyword) {
+      condition = { ...condition, title: { $regex: keyword, $options: "i" } };
+    }
+
+    if (categories) {
+      condition = { ...categories, categories: categories };
+    }
+
+    if (talent) {
+      condition = { ...talent, name: { $regex: talent, $options: "i" } };
+    }
+
+    const result = await Event.find(condition)
+      .populate({
+        path: "image",
+        select: "_id name",
+      })
+      .populate({
+        path: "categories",
+        select: "_id name",
+      })
+      .populate({
+        path: "talent",
+        select: "_id name role image",
+        populate: { path: "image_id", select: "_id name" },
+      });
+
+    return result;
+  } catch (error) {
+    console.error(`error retrived event: ${error}`);
+    throw error;
+  }
+};
 const getAll = async (req) => {
   try {
     const { keyword, categories, talent } = req.query;
@@ -92,7 +134,10 @@ const getAll = async (req) => {
 const getOneById = async (req) => {
   try {
     const id = req.params.id;
-    const result = await Event.findOne({ _id: id })
+    const result = await Event.findOne({
+      _id: id,
+      organizer: req.user.organizer,
+    })
       .populate({
         path: "image",
         select: "_id name",
@@ -116,8 +161,6 @@ const getOneById = async (req) => {
 
 const update = async (req) => {
   try {
-    // check id
-    await getOneById(req);
     // body
     const id = req.params.id;
     const {
@@ -141,6 +184,7 @@ const update = async (req) => {
     // check event title
     const check = await Event.findOne({
       title,
+      organizer: req.user.organizer,
       _id: { $ne: id },
     });
     if (check) throw new BadRequesError("title already exist");
@@ -160,9 +204,11 @@ const update = async (req) => {
         image,
         categories,
         talent,
+        organizer: req.user.organizer,
       },
       { runValidators: true, new: true }
     );
+    if (!result) throw new NotFoundError("Event not found");
     return result;
   } catch (error) {
     console.error(error);
@@ -174,7 +220,10 @@ const destroy = async (req) => {
   try {
     // data
     const id = req.params.id;
-    const result = await Event.deleteOne({ _id: id });
+    const result = await Event.deleteOne({
+      _id: id,
+      organizer: req.user.organizer,
+    });
     if (!result) throw new NotFoundError("Event not found");
   } catch (error) {
     throw error;
@@ -184,6 +233,7 @@ const destroy = async (req) => {
 module.exports = {
   create,
   getAll,
+  getAllbyOrganizer,
   getOneById,
   update,
   destroy,
