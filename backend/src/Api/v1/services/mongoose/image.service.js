@@ -10,6 +10,13 @@ const create = async (req) => {
   return result;
 };
 
+const checkImage = async (id) => {
+  const result = await Image.findOne({ _id: id });
+  if (!result) throw new NotFoundError("image not found");
+  return result;
+};
+
 module.exports = {
   create,
+  checkImage,
 };

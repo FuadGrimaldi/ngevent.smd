@@ -7,11 +7,11 @@ const categorySchema = new Schema(
       type: String,
       required: true,
     },
-    // organizerId: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Organizers",
-    //   required: true,
-    // },
+    organizer: {
+      type: mongoose.Types.ObjectId,
+      ref: "Organizer",
+      required: true,
+    },
   },
   { timestamps: true }
 );

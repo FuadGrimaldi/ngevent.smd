@@ -7,4 +7,5 @@ module.exports = {
   dbname: process.env.DBNAME,
   port: process.env.PORT,
   secret_key: process.env.JWT_SECRET,
+  jwt_expiration: "24h",
 };

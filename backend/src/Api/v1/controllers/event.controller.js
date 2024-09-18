@@ -1,59 +1,13 @@
-const categoriesService = require("../services/mongoose/categories.service");
 const { customResponse } = require("../../../helpers/responseHelpers");
+const eventService = require("../services/mongoose/event.service");
 
-const getAllCategories = async (req, res) => {
+const createEvent = async (req, res) => {
   try {
-    const data = await categoriesService.getAll();
-    res
-      .status(200)
-      .json(customResponse(200, "Categories retrieved successfully", data));
-  } catch (error) {
-    console.log(error);
-    // Return proper error response with error handler
-    const statusCode = error.statusCode || 500;
-    const errorMessage = error.message || "Internal Server Error";
-    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
-  }
-};
-
-const getAllCategoriesByOrganizer = async (req, res) => {
-  try {
-    const data = await categoriesService.getAllByOrganizer(req);
-    res
-      .status(200)
-      .json(customResponse(200, "Categories retrieved successfully", data));
-  } catch (error) {
-    console.log(error);
-    // Return proper error response with error handler
-    const statusCode = error.statusCode || 500;
-    const errorMessage = error.message || "Internal Server Error";
-    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
-  }
-};
-
-const getCategoriesById = async (req, res) => {
-  try {
-    const data = await categoriesService.getById(req);
-    res
-      .status(200)
-      .json(customResponse(200, "Categories retrieved successfully", data));
-  } catch (error) {
-    console.error(error);
-    // Return proper error response with error handler
-    const statusCode = error.statusCode || 500;
-    const errorMessage = error.message || "Internal Server Error";
-    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
-  }
-};
-
-const createCategories = async (req, res) => {
-  try {
-    const data = await categoriesService.create(req);
+    const data = await eventService.create(req);
     res
       .status(201)
-      .json(customResponse(201, "Categories created successfully", data));
+      .json(customResponse(201, "Event created successfully", data));
   } catch (error) {
-    console.error(error);
     // Return proper error response with error handler
     const statusCode = error.statusCode || 500;
     const errorMessage = error.message || "Internal Server Error";
@@ -61,19 +15,13 @@ const createCategories = async (req, res) => {
   }
 };
 
-const updateCategories = async (req, res) => {
+const getAllEvent = async (req, res) => {
   try {
-    const data = await categoriesService.update(req);
-    if (!data) {
-      return res
-        .status(404)
-        .json(customResponse(404, "Categories not found", null));
-    }
+    const data = await eventService.getAll(req);
     res
       .status(200)
-      .json(customResponse(200, "Categories update successfully", data));
+      .json(customResponse(200, "Events retrieved successfully", data));
   } catch (error) {
-    console.error(error);
     // Return proper error response with error handler
     const statusCode = error.statusCode || 500;
     const errorMessage = error.message || "Internal Server Error";
@@ -81,19 +29,13 @@ const updateCategories = async (req, res) => {
   }
 };
 
-const deletedCategories = async (req, res) => {
+const getAllEventbyOrganizer = async (req, res) => {
   try {
-    const data = await categoriesService.destroy(req);
-    if (!data) {
-      return res
-        .status(404)
-        .json(customResponse(404, "Categories not found", null));
-    }
+    const data = await eventService.getAllbyOrganizer(req);
     res
       .status(200)
-      .json(customResponse(200, "categories delete successfully", null));
+      .json(customResponse(200, "Events retrieved successfully", data));
   } catch (error) {
-    console.error(error);
     // Return proper error response with error handler
     const statusCode = error.statusCode || 500;
     const errorMessage = error.message || "Internal Server Error";
@@ -101,11 +43,52 @@ const deletedCategories = async (req, res) => {
   }
 };
 
+const getOneEvent = async (req, res) => {
+  try {
+    const data = await eventService.getOneById(req);
+    res
+      .status(200)
+      .json(customResponse(200, "Event retrieved successfully", data));
+  } catch (error) {
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
+
+const updateEvent = async (req, res) => {
+  try {
+    const data = await eventService.update(req);
+    res
+      .status(200)
+      .json(customResponse(200, "Update event successfully", data));
+  } catch (error) {
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
+
+const deleteEvent = async (req, res) => {
+  try {
+    const data = await eventService.destroy(req);
+    res
+      .status(200)
+      .json(customResponse(200, "Deleted event successfully", data));
+  } catch (error) {
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
 module.exports = {
-  getAllCategories,
-  getAllCategoriesByOrganizer,
-  createCategories,
-  getCategoriesById,
-  updateCategories,
-  deletedCategories,
+  createEvent,
+  getAllEvent,
+  getAllEventbyOrganizer,
+  getOneEvent,
+  updateEvent,
+  deleteEvent,
 };
