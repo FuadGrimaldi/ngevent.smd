@@ -1,7 +1,6 @@
 const User = require("../../models/user.model");
 const Organizer = require("../../models/organizer.model");
 const { BadRequesError } = require("../../../../errors");
-const { getAllByOrganizer } = require("./categories.service");
 
 const createOrganizer = async (req) => {
   try {
@@ -49,15 +48,18 @@ const createUser = async (req) => {
   }
 };
 
-// getAllByOrganizer = async (req) => {
-//   try {
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };
+const getAllByOrganizer = async (req) => {
+  try {
+    const result = await User.find();
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 module.exports = {
   createOrganizer,
   createUser,
+  getAllByOrganizer,
 };

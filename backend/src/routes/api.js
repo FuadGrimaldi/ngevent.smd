@@ -138,5 +138,11 @@ router.post(
   authorizeRoles("organizer"),
   userController.createUser
 );
+router.get(
+  "/cms/users",
+  authenticateUser,
+  authorizeRoles("owner"),
+  userController.getAllUser
+);
 
 module.exports = router;
