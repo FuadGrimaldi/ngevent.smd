@@ -9,6 +9,7 @@ const talentController = require("../Api/v1/controllers/talent.controller");
 const eventController = require("../Api/v1/controllers/event.controller");
 const userController = require("../Api/v1/controllers/user.controller");
 const authController = require("../Api/v1/controllers/auth.controller");
+const paymentController = require("../Api/v1/controllers/payment.controller");
 
 // loginCMS
 router.post("/auth/signin", authController.signInCMS);
@@ -123,6 +124,14 @@ router.delete(
   authenticateUser,
   authorizeRoles("organizer"),
   eventController.deleteEvent
+);
+
+// Payment
+router.post(
+  "/cms/payments",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.createPayment
 );
 
 // User
