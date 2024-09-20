@@ -16,6 +16,24 @@ const createPayment = async (req, res) => {
   }
 };
 
+const getAllPayment = async (req, res) => {
+  try {
+    const data = await paymentService.getAll();
+    res
+      .status(200)
+      .json(
+        customResponse(200, "all payment method retrieved successfully", data)
+      );
+  } catch (error) {
+    console.log(error);
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
+
 module.exports = {
   createPayment,
+  getAllPayment,
 };

@@ -133,6 +133,13 @@ router.post(
   authorizeRoles("organizer"),
   paymentController.createPayment
 );
+// Payment
+router.get(
+  "/cms/payments",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.getAllPayment
+);
 
 // User
 router.post(

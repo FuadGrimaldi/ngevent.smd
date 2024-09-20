@@ -26,6 +26,16 @@ const create = async (req) => {
   }
 };
 
+const getAll = async () => {
+  try {
+    return await Payment.find();
+  } catch (error) {
+    console.error("Error getting all payments:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   create,
+  getAll,
 };
