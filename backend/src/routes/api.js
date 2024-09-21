@@ -133,12 +133,40 @@ router.post(
   authorizeRoles("organizer"),
   paymentController.createPayment
 );
-// Payment
+
+router.get(
+  "/cms/payments/admin",
+  authenticateUser,
+  authorizeRoles("admin"),
+  paymentController.getAllPayment
+);
+
 router.get(
   "/cms/payments",
   authenticateUser,
   authorizeRoles("organizer"),
-  paymentController.getAllPayment
+  paymentController.getAllPaymentByOrganizer
+);
+
+router.get(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.getOnePayment
+);
+
+router.put(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.updatePayment
+);
+
+router.delete(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.deletePayment
 );
 
 // User
