@@ -10,6 +10,7 @@ const eventController = require("../Api/v1/controllers/event.controller");
 const userController = require("../Api/v1/controllers/user.controller");
 const authController = require("../Api/v1/controllers/auth.controller");
 const paymentController = require("../Api/v1/controllers/payment.controller");
+const orderController = require("../Api/v1/controllers/order.controller");
 
 // loginCMS
 router.post("/auth/signin", authController.signInCMS);
@@ -187,6 +188,14 @@ router.get(
   authenticateUser,
   authorizeRoles("owner"),
   userController.getAllUser
+);
+
+// Orders
+router.get(
+  "/cms/orders",
+  authenticateUser,
+  authorizeRoles("organizer", "admin", "owner"),
+  orderController.getAllOrders
 );
 
 module.exports = router;
