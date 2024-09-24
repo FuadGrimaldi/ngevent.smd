@@ -9,6 +9,8 @@ const talentController = require("../Api/v1/controllers/talent.controller");
 const eventController = require("../Api/v1/controllers/event.controller");
 const userController = require("../Api/v1/controllers/user.controller");
 const authController = require("../Api/v1/controllers/auth.controller");
+const paymentController = require("../Api/v1/controllers/payment.controller");
+const orderController = require("../Api/v1/controllers/order.controller");
 
 // loginCMS
 router.post("/auth/signin", authController.signInCMS);
@@ -125,6 +127,49 @@ router.delete(
   eventController.deleteEvent
 );
 
+// Payment
+router.post(
+  "/cms/payments",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.createPayment
+);
+
+router.get(
+  "/cms/payments/admin",
+  authenticateUser,
+  authorizeRoles("admin"),
+  paymentController.getAllPayment
+);
+
+router.get(
+  "/cms/payments",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.getAllPaymentByOrganizer
+);
+
+router.get(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.getOnePayment
+);
+
+router.put(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.updatePayment
+);
+
+router.delete(
+  "/cms/payments/:id",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  paymentController.deletePayment
+);
+
 // User
 router.post(
   "/organizers",
@@ -137,6 +182,20 @@ router.post(
   authenticateUser,
   authorizeRoles("organizer"),
   userController.createUser
+);
+router.get(
+  "/cms/users",
+  authenticateUser,
+  authorizeRoles("owner"),
+  userController.getAllUser
+);
+
+// Orders
+router.get(
+  "/cms/orders",
+  authenticateUser,
+  authorizeRoles("organizer", "admin", "owner"),
+  orderController.getAllOrders
 );
 
 module.exports = router;

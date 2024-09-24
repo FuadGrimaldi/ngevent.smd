@@ -31,7 +31,22 @@ const createUser = async (req, res) => {
   }
 };
 
+const getAllUser = async (req, res) => {
+  try {
+    const data = await userService.getAllByOrganizer(req);
+    res
+      .status(200)
+      .json(customResponse(201, "User retrived successfully", data));
+  } catch (error) {
+    console.error(error);
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
 module.exports = {
   createOrganizer,
   createUser,
+  getAllUser,
 };
