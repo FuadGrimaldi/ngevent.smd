@@ -84,6 +84,20 @@ const deleteEvent = async (req, res) => {
     res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
   }
 };
+
+const updateStatusEvent = async (req, res) => {
+  try {
+    const data = await eventService.changeStatus(req);
+    res
+      .status(200)
+      .json(customResponse(200, "Update status event successfully", data));
+  } catch (error) {
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
 module.exports = {
   createEvent,
   getAllEvent,
@@ -91,4 +105,5 @@ module.exports = {
   getOneEvent,
   updateEvent,
   deleteEvent,
+  updateStatusEvent,
 };

@@ -120,6 +120,12 @@ router.put(
   authorizeRoles("organizer"),
   eventController.updateEvent
 );
+router.put(
+  "/cms/events/:id/status",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  eventController.updateStatusEvent
+);
 router.delete(
   "/cms/events/:id",
   authenticateUser,
