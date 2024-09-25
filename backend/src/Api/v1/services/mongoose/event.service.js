@@ -56,7 +56,7 @@ const create = async (req) => {
 
 const getAllbyOrganizer = async (req) => {
   try {
-    const { keyword, categories, talent } = req.query;
+    const { keyword, categories, talent, status } = req.query;
     let condition = { organizer: req.user.organizer };
 
     if (keyword) {
@@ -69,6 +69,10 @@ const getAllbyOrganizer = async (req) => {
 
     if (talent) {
       condition = { ...talent, name: { $regex: talent, $options: "i" } };
+    }
+
+    if (["Draft", "Published"].includes(status)) {
+      condition = { ...condition, statusEvent: status };
     }
 
     const result = await Event.find(condition)

@@ -11,9 +11,10 @@ const userController = require("../Api/v1/controllers/user.controller");
 const authController = require("../Api/v1/controllers/auth.controller");
 const paymentController = require("../Api/v1/controllers/payment.controller");
 const orderController = require("../Api/v1/controllers/order.controller");
+const participantController = require("../Api/v1/controllers/participant.controller");
 
 // loginCMS
-router.post("/auth/signin", authController.signInCMS);
+router.post("/auth/signin/cms", authController.signInCMS);
 
 // categories
 router.get(
@@ -203,5 +204,8 @@ router.get(
   authorizeRoles("organizer", "admin", "owner"),
   orderController.getAllOrders
 );
+
+// Participants
+router.post("/auth/signup", participantController.signup);
 
 module.exports = router;
