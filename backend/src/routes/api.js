@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/multer");
-const { authenticateUser, authorizeRoles } = require("../middlewares/auth");
+const {
+  authenticateUser,
+  authorizeRoles,
+  authenticateParticipant,
+} = require("../middlewares/auth");
 
 const categoriesController = require("../Api/v1/controllers/categories.controller");
 const imageController = require("../Api/v1/controllers/image.controller");
@@ -11,9 +15,10 @@ const userController = require("../Api/v1/controllers/user.controller");
 const authController = require("../Api/v1/controllers/auth.controller");
 const paymentController = require("../Api/v1/controllers/payment.controller");
 const orderController = require("../Api/v1/controllers/order.controller");
+const participantController = require("../Api/v1/controllers/participant.controller");
 
 // loginCMS
-router.post("/auth/signin", authController.signInCMS);
+router.post("/auth/signin/cms", authController.signInCMS);
 
 // categories
 router.get(
@@ -120,6 +125,12 @@ router.put(
   authorizeRoles("organizer"),
   eventController.updateEvent
 );
+router.put(
+  "/cms/events/:id/status",
+  authenticateUser,
+  authorizeRoles("organizer"),
+  eventController.updateStatusEvent
+);
 router.delete(
   "/cms/events/:id",
   authenticateUser,
@@ -197,5 +208,21 @@ router.get(
   authorizeRoles("organizer", "admin", "owner"),
   orderController.getAllOrders
 );
+
+// Participants
+router.post("/auth/signup", participantController.signup);
+router.post("/active", participantController.activateParticipant);
+router.post("/auth/signin", participantController.signin);
+router.get("/events", participantController.getAllEventsLandingPage);
+router.get("/events/:id", participantController.getDetailLandingPage);
+router.get(
+  "/orders",
+  authenticateParticipant,
+  participantController.getDashboard
+);
+// router.post('/auth/signup', signup);
+// router.put('/active', activeParticipant);
+// router.get('/payments/:organizer', authenticateParticipant, getAllPayment);
+// router.post('/checkout', authenticateParticipant, checkout);
 
 module.exports = router;

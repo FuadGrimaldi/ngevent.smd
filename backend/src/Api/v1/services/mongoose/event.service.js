@@ -56,7 +56,7 @@ const create = async (req) => {
 
 const getAllbyOrganizer = async (req) => {
   try {
-    const { keyword, categories, talent } = req.query;
+    const { keyword, categories, talent, status } = req.query;
     let condition = { organizer: req.user.organizer };
 
     if (keyword) {
@@ -69,6 +69,10 @@ const getAllbyOrganizer = async (req) => {
 
     if (talent) {
       condition = { ...talent, name: { $regex: talent, $options: "i" } };
+    }
+
+    if (["Draft", "Published"].includes(status)) {
+      condition = { ...condition, statusEvent: status };
     }
 
     const result = await Event.find(condition)
@@ -230,6 +234,36 @@ const destroy = async (req) => {
   }
 };
 
+const changeStatus = async (req) => {
+  try {
+    const { id } = req.params;
+    const { statusEvent } = req.body;
+
+    if (!["Draft", "Published"].includes(statusEvent)) {
+      throw new BadRequestError(
+        "Draft status event must be published or draft"
+      );
+    }
+
+    // cari event berdasarkan field id
+    const checkEvent = await Event.findOne({
+      _id: id,
+      organizer: req.user.organizer,
+    });
+
+    // jika id result false / null maka akan menampilkan error `Tidak ada acara dengan id` yang dikirim client
+    if (!checkEvent) throw new NotFoundError(`Event not found id :  ${id}`);
+
+    checkEvent.statusEvent = statusEvent;
+
+    await checkEvent.save();
+
+    return checkEvent;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   create,
   getAll,
@@ -237,4 +271,5 @@ module.exports = {
   getOneById,
   update,
   destroy,
+  changeStatus,
 };

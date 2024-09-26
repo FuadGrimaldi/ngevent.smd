@@ -1,7 +1,7 @@
 const User = require("../../models/user.model");
 const { BadRequesError, UnauthorizedError } = require("../../../../errors");
 const { createJWT } = require("../../../../middlewares/jwt");
-const createTokenUser = require("../../../../helpers/createTokenUser");
+const { createTokenUser } = require("../../../../helpers/createToken");
 
 const signIn = async (req) => {
   try {
