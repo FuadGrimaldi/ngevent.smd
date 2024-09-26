@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/multer");
-const { authenticateUser, authorizeRoles } = require("../middlewares/auth");
+const {
+  authenticateUser,
+  authorizeRoles,
+  authenticateParticipant,
+} = require("../middlewares/auth");
 
 const categoriesController = require("../Api/v1/controllers/categories.controller");
 const imageController = require("../Api/v1/controllers/image.controller");
@@ -207,5 +211,18 @@ router.get(
 
 // Participants
 router.post("/auth/signup", participantController.signup);
+router.post("/active", participantController.activateParticipant);
+router.post("/auth/signin", participantController.signin);
+router.get("/events", participantController.getAllEventsLandingPage);
+router.get("/events/:id", participantController.getDetailLandingPage);
+router.get(
+  "/orders",
+  authenticateParticipant,
+  participantController.getDashboard
+);
+// router.post('/auth/signup', signup);
+// router.put('/active', activeParticipant);
+// router.get('/payments/:organizer', authenticateParticipant, getAllPayment);
+// router.post('/checkout', authenticateParticipant, checkout);
 
 module.exports = router;
