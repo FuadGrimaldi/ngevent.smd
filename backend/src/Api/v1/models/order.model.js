@@ -106,9 +106,9 @@ const orderSchema = new mongoose.Schema(
         ref: "image",
         required: true,
       },
-      category: {
+      categories: {
         type: mongoose.Types.ObjectId,
-        ref: "Category",
+        ref: "Categories",
         required: true,
       },
       talent: {

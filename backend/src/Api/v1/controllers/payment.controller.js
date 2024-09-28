@@ -34,7 +34,7 @@ const getAllPayment = async (req, res) => {
 };
 const getAllPaymentByOrganizer = async (req, res) => {
   try {
-    const data = await paymentService.getAllByOrganizer();
+    const data = await paymentService.getAllByOrganizer(req);
     res
       .status(200)
       .json(
