@@ -220,6 +220,11 @@ router.get(
   authenticateParticipant,
   participantController.getDashboard
 );
+router.post(
+  "/checkout",
+  authenticateParticipant,
+  participantController.checkout
+);
 // router.post('/auth/signup', signup);
 // router.put('/active', activeParticipant);
 // router.get('/payments/:organizer', authenticateParticipant, getAllPayment);

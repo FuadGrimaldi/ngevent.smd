@@ -93,6 +93,21 @@ const getDashboard = async (req, res) => {
   }
 };
 
+const checkout = async (req, res) => {
+  try {
+    const data = await participantService.checkoutOrder(req);
+    res
+      .status(200)
+      .json(customResponse(200, "checkout order successfully", data));
+  } catch (error) {
+    console.error(error);
+    // Return proper error response with error handler
+    const statusCode = error.statusCode || 500;
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(statusCode).json(customResponse(statusCode, errorMessage, null));
+  }
+};
+
 module.exports = {
   signup,
   activateParticipant,
@@ -100,4 +115,5 @@ module.exports = {
   getAllEventsLandingPage,
   getDetailLandingPage,
   getDashboard,
+  checkout,
 };

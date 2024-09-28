@@ -1,7 +1,7 @@
 const Participant = require("../../models/participant.model");
 const Event = require("../../models/event.model");
 const Order = require("../../models/order.model");
-// const Payment = require("../../models/payments.model");
+const Payment = require("../../models/payment.model");
 
 const {
   BadRequesError,
@@ -141,6 +141,85 @@ const getOneEvent = async (req) => {
   }
 };
 
+/**
+ * Tugas Send email invoice
+ * TODO: Ambil data email dari personal detail
+ *  */
+const checkoutOrder = async (req) => {
+  try {
+    const { event, personalDetail, payment, tickets } = req.body;
+
+    const checkingEvent = await Event.findOne({ _id: event });
+    if (!checkingEvent) {
+      throw new NotFoundError("there is no event with this id : " + event);
+    }
+
+    const checkingPayment = await Payment.findOne({ _id: payment });
+
+    if (!checkingPayment) {
+      throw new NotFoundError("no payment method with this id :" + payment);
+    }
+
+    let totalPay = 0,
+      totalOrderTicket = 0;
+    await tickets.forEach((tic) => {
+      checkingEvent.tickets.forEach((ticket) => {
+        if (tic.ticketCategories.type === ticket.type) {
+          if (tic.sumTicket > ticket.stock) {
+            throw new NotFoundError("event stock is not enough");
+          } else {
+            ticket.stock -= tic.sumTicket;
+
+            totalOrderTicket += tic.sumTicket;
+            totalPay += tic.ticketCategories.price * tic.sumTicket;
+          }
+        }
+      });
+    });
+
+    await checkingEvent.save();
+
+    const historyEvent = {
+      title: checkingEvent.title,
+      date: checkingEvent.date,
+      about: checkingEvent.about,
+      tagline: checkingEvent.tagline,
+      keyPoint: checkingEvent.keyPoint,
+      venueName: checkingEvent.vanueName,
+      tickets: tickets,
+      image: checkingEvent.image,
+      categories: checkingEvent.categories,
+      talent: checkingEvent.talent,
+      organizer: checkingEvent.organizer,
+    };
+
+    const result = new Order({
+      date: new Date(),
+      personalDetail: personalDetail,
+      totalPay,
+      totalOrderTicket,
+      orderItems: tickets,
+      participant: req.participant.id,
+      event,
+      historyEvent,
+      payment,
+    });
+
+    await result.save();
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllPaymentByOrganizer = async (req) => {
+  const { organizer } = req.params;
+
+  const result = await Payment.find({ organizer: organizer });
+
+  return result;
+};
+
 const getAllOrders = async (req) => {
   try {
     console.log(req.participant);
@@ -158,4 +237,6 @@ module.exports = {
   getAllEvents,
   getOneEvent,
   getAllOrders,
+  checkoutOrder,
+  getAllPaymentByOrganizer,
 };
