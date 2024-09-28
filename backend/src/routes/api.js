@@ -225,9 +225,5 @@ router.post(
   authenticateParticipant,
   participantController.checkout
 );
-// router.post('/auth/signup', signup);
-// router.put('/active', activeParticipant);
-// router.get('/payments/:organizer', authenticateParticipant, getAllPayment);
-// router.post('/checkout', authenticateParticipant, checkout);
 
 module.exports = router;
