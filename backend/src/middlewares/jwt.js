@@ -8,6 +8,21 @@ const createJWT = ({ payload }) => {
   return token;
 };
 
+const createRefreshJWT = ({ payload }) => {
+  const token = jwt.sign(payload, config.secret_key, {
+    expiresIn: config.jwt_expiration,
+  });
+  return token;
+};
+
 const isTokenValid = ({ token }) => jwt.verify(token, config.secret_key);
 
-module.exports = { createJWT, isTokenValid };
+const isTokenValidRefreshToken = ({ token }) =>
+  jwt.verify(token, config.secret_key);
+
+module.exports = {
+  createJWT,
+  isTokenValid,
+  createRefreshJWT,
+  isTokenValidRefreshToken,
+};
