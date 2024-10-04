@@ -2,11 +2,11 @@ const configureMiddleware = require("./middlewares/middleware");
 const { app, startServer } = require("../config/server");
 const NotFoundMiddleware = require("./middlewares/not-found");
 const handlerErrorMiddleware = require("./middlewares/handler-error");
-const corsConfig = require("./middlewares/cors");
+const cors = require("cors");
 const router = require("./routes/api");
 
 // CORS Configuration
-app.options("*", corsConfig);
+app.use(cors());
 
 // Middleware
 configureMiddleware(app);
