@@ -13,7 +13,7 @@ const { createTokenParticipant } = require("../../../../helpers/createToken");
 
 const { createJWT } = require("../../../../middlewares/jwt");
 
-const { otpMail } = require("../email");
+const { otpMail, invoiceMail } = require("../email");
 
 const signUp = async (req) => {
   try {
@@ -206,6 +206,12 @@ const checkoutOrder = async (req) => {
     });
 
     await result.save();
+    // Kirim email invoice setelah pesanan disimpan
+    const emailData = {
+      ...result._doc,
+      personalDetail: personalDetail,
+    };
+    await invoiceMail(req.participant.email, emailData);
     return result;
   } catch (error) {
     throw error;

@@ -8,7 +8,7 @@ import NAlert from "../../components/alert";
 import { useNavigate } from "react-router-dom";
 import { config } from "../../config";
 
-function PageSignin() {
+function PageSignup() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -92,4 +92,4 @@ function PageSignin() {
   );
 }
 
-export default PageSignin;
+export default PageSignup;
