@@ -5,10 +5,12 @@ import Form from "react-bootstrap/Form";
 import TextInputWithLabel from "../../components/TextInputWithLabel";
 import axios from "axios";
 import NAlert from "../../components/alert";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { config } from "../../config";
 
 function PageSignin() {
+  const token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -47,6 +49,8 @@ function PageSignin() {
       });
     }
   };
+
+  // if (!token) return <Navigate to="/" replace={true} />;
 
   return (
     <Container md={12} className="my-5">
